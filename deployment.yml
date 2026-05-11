@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: docker-project-1
+  namespace: devops-project
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: docker-project-1
+
+  template:
+    metadata:
+      labels:
+        app: docker-project-1
+
+    spec:
+      containers:
+      - name: docker-project-1
+
+        image: myfuturehub/docker-project-1:v1
+
+        ports:
+        - containerPort: 3000
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
